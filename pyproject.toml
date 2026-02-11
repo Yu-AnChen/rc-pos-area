@@ -39,3 +39,5 @@ pos-area = "rc_pos_area.cli:main"
 Homepage = "https://github.com/yu-anchen/rc-pos-area"
 Repository = "https://github.com/yu-anchen/rc-pos-area"
 Documentation = "https://github.com/yu-anchen/rc-pos-area#readme"
+
+[tool.setuptools_scm]
