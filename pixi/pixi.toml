@@ -1,0 +1,13 @@
+[workspace]
+channels = ["conda-forge"]
+name = "rc-pos-area-env"
+platforms = ["win-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = "3.10.*"
+
+[pypi-dependencies]
+rc-pos-area = { git = "https://github.com/Yu-AnChen/rc-pos-area.git" }
