@@ -1,277 +1,360 @@
-# `rc-pos-area` CLI Tool
+# rc-pos-area: Positive Area Calculator
 
-A command-line tool for calculating and summarizing positive area in image channels of a multiplex whole slide scan based on the thresholds provided by the user.
+> Calculate positive area per channel in multiplex whole slide images using user-defined intensity thresholds.
+
+## What Does This Tool Do?
+
+For each channel listed in your input, this tool calculates what fraction of the image (and of a tissue region) is above the threshold you set. Specifically it:
+
+- Applies a threshold to each channel and measures the **positive area** in the whole image and within a **tissue region** defined by channel 2
+- Processes **single files or entire folders** in batch with pre-flight validation
+- Produces a **summary report** grouping samples by channel configuration with color-coding
+
+---
+
+## Before You Start
+
+### What You'll Need
+
+1. **Your microscopy images** in OME-TIFF format
+2. **An Excel file** for each image with:
+   - Your sample information (slide name, file path)
+   - Channel thresholds you want to use
+
+---
 
 ## Installation
 
-### Using [pixi](https://pixi.prefix.dev/) (recommended)
+We use **pixi** to set up everything automatically. Pixi is a package manager that creates an isolated environment with all the required software — think of it as a self-contained bubble for this tool.
 
-1. [Install pixi](https://pixi.prefix.dev/latest/installation/#__tabbed_1_2)
-2. Run the following command in command prompt or terminal:
+### Step 1: Install pixi
 
-    ```bash
-    mkdir rc-pos-area-env && cd rc-pos-area-env
+Open **PowerShell** (search for "PowerShell" in the Start menu) and run:
 
-    curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.toml
-    curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.lock
-    
-    pixi install
-    ```
-
-3. To run the tool, use `pixi run`:
-
-    ```bash
-    pixi run pos-area --help
-    ```
-
-## Requirements
-
-- Python 3.10 or higher
-- Dependencies (installed automatically):
-  - pandas>=2.0.0
-  - openpyxl>=3.1.0
-  - numpy>=1.24.0
-  - dask-image>=2023.0.0
-  - palom>=2023.0.0
-  - matplotlib>=3.7.0
-
-## Usage
-
-> [!NOTE]
-> **Note:** If you installed using `pixi`, prefix the commands with `pixi run`.
-> For example: `pixi run pos-area --help`.
-
-Once installed, the tool is available as the `pos-area` command.
-
-### Mode 1: Single File Processing
-
-Process a single Excel file:
-
-```bash
-pos-area single <input_excel> [--output-dir <dir>]
+```powershell
+iwr -useb https://pixi.sh/install.ps1 | iex
 ```
 
-**Examples:**
-```bash
-# Process F8288.xlsx, output to default 'results/' directory
-pos-area single F8288.xlsx
+Or download the installer from [pixi.sh](https://pixi.prefix.dev/latest/installation/#__tabbed_1_2).
 
-# Process with custom output directory
-pos-area single F8288.xlsx --output-dir /path/to/output
+<details>
+<summary><b>Mac / Linux</b></summary>
 
-# Verbose output
-pos-area single F8288.xlsx --verbose
-```
-
-**Output:** Creates `F8288_processed.xlsx` in the output directory.
-
-### Mode 2: Batch Processing
-
-Process all Excel files in a directory:
+Open Terminal and run:
 
 ```bash
-pos-area batch <input_dir> [--output-dir <dir>] [--dry-run]
+curl -fsSL https://pixi.sh/install.sh | bash
 ```
 
-**Examples:**
-```bash
-# Process all .xlsx files in current directory
-pos-area batch .
+</details>
 
-# Process files with custom output directory
-pos-area batch /path/to/excel/files --output-dir processed_results
+### Step 2: Set Up the Environment
 
-# Dry run - validate only, don't process
-pos-area batch . --dry-run
+Run these commands in PowerShell:
 
-# Quiet mode
-pos-area batch . --quiet
+```powershell
+# Create and enter a new folder
+mkdir rc-pos-area-env
+cd rc-pos-area-env
+
+# Download configuration files
+curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.toml
+curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.lock
+
+# Install everything
+pixi install
 ```
 
-**Validation:** Before processing, the tool validates all files and checks:
-1. Excel file format is correct
-2. Required sheets ('Files', 'Thresholds') exist
-3. Channel 2 is present in Thresholds sheet (required for tissue region definition)
-4. Image file exists and is accessible
-5. Image can be opened with `palom.reader.OmePyramidReader`
-6. Channel numbers in Thresholds sheet are valid (1-based indexing)
-7. Output directory can be created and files can be written
+**This may take a few minutes** the first time as it downloads Python and all required libraries.
 
-If any file fails validation, the tool will report all issues and exit without processing any files.
-
-**Output:** Creates `{filename}_processed.xlsx` for each input file.
-
-### Mode 3: Report Generation
-
-Generate a summary report from processed files:
+<details>
+<summary><b>Mac / Linux</b></summary>
 
 ```bash
-pos-area report <processed_dir> [--output <filename>]
+mkdir rc-pos-area-env && cd rc-pos-area-env
+
+curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.toml
+curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.lock
+
+pixi install
 ```
 
-**Examples:**
-```bash
-# Generate report from processed files in results/
-pos-area report results/
+</details>
 
-# Specify custom output filename
-pos-area report results/ --output MyReport.xlsx
+### Step 3: Verify Installation
 
-# Verbose output
-pos-area report results/ --verbose
+```powershell
+pixi run pos-area --help
 ```
 
-**Output:** Creates `Summary-{timestamp}.xlsx` (or custom filename) with:
-- **Summary sheet**: Lists all files with group assignments and color coding
-- **Individual slide sheets**: One sheet per slide, ordered by group and slide name
-- **Sheet tab colors**: Color-coded by group for easy visual identification
-- **Grouping**: Files are automatically grouped by channel configuration
+You should see a help message listing available commands.
 
-### Global Options
+---
 
-- `--verbose`: Show detailed progress information
-- `--quiet`: Minimal output (only errors and final results)
-- `--output-dir <dir>`: Specify output directory (default: `results/`)
+## Preparing Your Input Files
 
-**Note:** `--verbose` and `--quiet` cannot be used together.
+Create an Excel file (`.xlsx`) for each image with **two sheets**:
 
-## Input File Format
+### Sheet 1: "Files"
 
-### Excel File Structure
-
-Each input Excel file must contain:
-
-#### 1. Files Sheet
 | Slide Name | File Path |
 |------------|-----------|
-| F8288 | /path/to/image.ome.tif |
+| Sample_001 | C:\Images\Sample_001.ome.tif |
 
-- Must have exactly one row
-- **Slide Name**: Identifier for the slide (used in reports)
-- **File Path**: Path to the OME-TIFF image file
+- **Slide Name**: A name for your sample (used in reports)
+- **File Path**: Full path to your OME-TIFF image file
 
-#### 2. Thresholds Sheet
+### Sheet 2: "Thresholds"
+
 | Channel # | Antibody | ArgoFluor | Threshold |
 |-----------|----------|-----------|-----------|
-| 2 | AF1 | NaN | 500 |
-| 3 | SPP1 | Argo520 | 1300 |
-| 5 | CD3e | Argo548 | 1650 |
+| 2 | DAPI | Argo550 | 500 |
+| 3 | CD3 | Argo660 | 1300 |
+| 5 | CD8 | Argo690 | 1650 |
 
-- **Channel #**: Channel number in the image (1-indexed, e.g., 1 for first channel)
-- **Antibody**: Antibody name (optional metadata)
-- **ArgoFluor**: Fluorophore name (optional metadata)
-- **Threshold**: Intensity threshold for positive area calculation
+- **Channel #**: Channel number (starts at 1, not 0!)
+- **Antibody**: Marker name (optional, for your reference)
+- **ArgoFluor**: Fluorophore name (optional, for your reference)
+- **Threshold**: Intensity cutoff for positive signal
 
-**Note**: Channel numbers use 1-based indexing (1, 2, 3, ...) as is standard in Excel, but are automatically converted to 0-based indexing when accessing the image.
+**Important:** Channel 2 is required — it defines the tissue region for analysis.
 
-## Output File Format
+---
 
-### Processed Files
+## Using the GUI (Recommended)
 
-Processed files (`*_processed.xlsx`) contain the original sheets plus updated Thresholds sheet:
+The graphical interface is the easiest way to use this tool — no command-line experience needed.
 
-| Channel # | Antibody | ArgoFluor | Threshold | Area (µm^2) | Positive Area (µm^2) | Positive Fraction (%) | Tissue Area (µm^2) | Positive Area in Tissue (µm^2) | Positive Fraction in Tissue (%) |
-|-----------|----------|-----------|-----------|-------------|----------------------|-----------------------|--------------------|--------------------------------|----------------------------------|
-| 2 | AF1 | NaN | 500 | 1234567.89 | 234567.89 | 19.01234 | 234567.89 | 234567.89 | 100.00000 |
-| 3 | SPP1 | Argo520 | 1300 | 1234567.89 | 123456.78 | 10.00000 | 234567.89 | 98765.43 | 42.10000 |
+### Launching the GUI
 
-New columns:
-- **Area (µm^2)**: Total area analyzed (entire image)
-- **Positive Area (µm^2)**: Area above threshold (entire image)
-- **Positive Fraction (%)**: Percentage of positive area (entire image)
-- **Tissue Area (µm^2)**: Area of tissue region (defined by channel 2 positivity)
-- **Positive Area in Tissue (µm^2)**: Area above threshold within tissue region only
-- **Positive Fraction in Tissue (%)**: Percentage of positive area within tissue region
-
-**Note**: Channel 2 is used to define the tissue region mask. All channels (including channel 2 itself) report metrics both for the entire image and within the tissue region.
-
-### Summary Report
-
-The summary report (`Summary-{timestamp}.xlsx`) contains:
-
-1. **Summary Sheet**:
-   - Lists all processed files
-   - Shows group assignments
-   - Color-coded by group
-
-2. **Individual Slide Sheets**:
-   - One sheet per slide (named by slide name)
-   - Contains Thresholds data with calculated metrics
-   - Ordered by: Group → Alphabetically within group
-   - Tab color matches group color
-
-## Processing Details
-
-### Image Analysis Parameters
-
-- **Pyramid Level**: 2 (configurable in `image_processor.py`)
-- **Gaussian Sigma**: 1.0 (for smoothing)
-- **Pixel Size**: 0.325 × 2^pyramid_level µm
-
-### Tissue Region Definition
-
-- **Tissue Mask**: Defined by channel 2 positivity (pixels where channel 2 > threshold)
-- The tissue mask is calculated once per image and applied to all channels
-- All channels report metrics both for the entire image and within the tissue region
-- Channel 2's "Positive Fraction in Tissue" will always be 100% (by definition)
-
-### Grouping Logic
-
-Files are grouped by their channel configuration (which channels are present):
-- Group 1: Files with channels [2, 3, 5, 11, 12, 13, 14, 15, 17]
-- Group 2: Files with channels [2, 13, 18]
-- etc.
-
-Groups are assigned distinct colors from the Tab10 color palette.
-
-## Workflow Examples
-
-### Complete Workflow
-
-```bash
-# 1. Process all files in a directory
-pos-area batch /data/experiments/batch1/ --output-dir results/batch1/
-
-# 2. Generate summary report
-pos-area report results/batch1/
-
-# Result: Summary-20260210_143022.xlsx with all results
+```powershell
+pixi run parea
 ```
 
-### Iterative Processing
+A window will open with three tabs: **Single**, **Batch**, and **Report**.
 
-```bash
-# 1. Dry run to check all files
-pos-area batch /data/experiments/ --dry-run
+### Single Tab — Process One File
 
-# 2. Fix any issues reported
-# ... edit Excel files ...
+Use this to analyze one sample at a time, or to test that your Excel file is set up correctly.
 
-# 3. Process after validation passes
-pos-area batch /data/experiments/
+1. Click **Browse** next to "Input Excel" and select your `.xlsx` file
+2. Click **Browse** next to "Output Dir" to choose where results are saved (default: `results`)
+3. Click **Validate** to check your file for errors without processing
+4. Click **Process** to run the analysis
 
-# 4. Process a single problematic file separately
-pos-area single /data/experiments/problematic_file.xlsx --verbose
+The result will be a `*_processed.xlsx` file in your output folder.
+
+### Batch Tab — Process Multiple Files
+
+Use this when you have many samples to analyze at once.
+
+1. Click **Browse** next to "Input Dir" and select the folder containing your `.xlsx` files
+2. Click **Browse** next to "Output Dir" to choose where results are saved
+3. (Optional) Check **Dry run** to validate all files without processing them — useful for catching errors before a long run
+4. Click **Run Batch**
+
+The tool validates **all** files first. If any file has an error, it will tell you before processing anything, so you can fix issues first.
+
+### Report Tab — Generate Summary Report
+
+Use this after processing to combine all results into one report.
+
+1. Click **Browse** next to "Processed Dir" and select the folder containing your `*_processed.xlsx` files
+2. (Optional) Click **Browse** next to "Output File" to choose a file name. If left blank, a timestamped name is generated automatically.
+3. Click **Generate Report**
+
+The summary report contains:
+
+- **Summary sheet**: All samples listed with group assignments, color-coded
+- **Individual sheets**: One per sample with detailed metrics
+- **Color-coded tabs**: Samples with the same channel configuration share a color
+
+### Status Log
+
+The log area at the bottom of the window shows progress and any errors. Use the **Clear Log** button to reset it.
+
+---
+
+## Using the Command Line
+
+<details>
+<summary><b>Expand for command-line usage</b></summary>
+
+All commands follow this pattern:
+
+```powershell
+pixi run pos-area <mode> <input> [options]
 ```
+
+### Process a Single File
+
+```powershell
+pixi run pos-area single my_sample.xlsx
+pixi run pos-area single my_sample.xlsx --output-dir my_results
+pixi run pos-area single my_sample.xlsx --verbose
+```
+
+### Process Multiple Files (Batch)
+
+```powershell
+pixi run pos-area batch my_excel_files\
+
+# Validate only, don't process
+pixi run pos-area batch my_excel_files\ --dry-run
+
+# Minimal output
+pixi run pos-area batch my_excel_files\ --quiet
+```
+
+### Generate Summary Report
+
+```powershell
+pixi run pos-area report results\
+pixi run pos-area report results\ --output Experiment_Summary.xlsx
+```
+
+### Options
+
+- `--verbose`: Show detailed progress
+- `--quiet`: Minimal output (errors and final results only)
+- `--output-dir <dir>`: Specify output directory (default: `results`)
+- `--dry-run` (batch only): Validate files without processing
+
+</details>
+
+---
+
+## Step-by-Step Workflow Example
+
+You have 10 samples from an experiment. Each has an OME-TIFF image file and an Excel file with thresholds. All Excel files are in a folder called `experiment_data`.
+
+### Using the GUI
+
+1. Launch the GUI: `pixi run parea`
+2. Go to the **Batch** tab
+3. Set "Input Dir" to your `experiment_data` folder
+4. Set "Output Dir" to `my_results`
+5. Check **Dry run** and click **Run Batch** — fix any errors reported in the log
+6. Uncheck **Dry run** and click **Run Batch** to process all files
+7. Go to the **Report** tab
+8. Set "Processed Dir" to `my_results`
+9. Click **Generate Report**
+10. Open the summary Excel file in your `my_results` folder
+
+<details>
+<summary><b>Using the command line</b></summary>
+
+```powershell
+# 1. Validate all files
+pixi run pos-area batch experiment_data\ --dry-run
+
+# 2. Process all samples
+pixi run pos-area batch experiment_data\ --output-dir my_results
+
+# 3. Generate summary report
+pixi run pos-area report my_results\ --output Experiment_Summary.xlsx
+```
+
+</details>
+
+---
+
+## Understanding the Output
+
+### Processed File Columns
+
+Each processed file includes these calculations:
+
+| Column | What It Means |
+|--------|---------------|
+| **Area (µm²)** | Total area of the entire image |
+| **Positive Area (µm²)** | Area where signal is above threshold (whole image) |
+| **Positive Fraction (%)** | Percentage of image that's positive |
+| **Tissue Area (µm²)** | Area of the tissue region (from channel 2) |
+| **Positive Area in Tissue (µm²)** | Positive area only within tissue |
+| **Positive Fraction in Tissue (%)** | Percentage of tissue that's positive |
+
+**Why two sets of metrics?**
+
+- **Whole image metrics** include everything (tissue + background)
+- **Tissue metrics** focus only on the tissue region defined by channel 2
+
+This gives you more accurate quantification by excluding background areas.
+
+---
 
 ## Troubleshooting
 
-### Common Validation Errors
+<details>
+<summary><b>"Command not found: pixi"</b></summary>
 
-1. **Missing sheet**: Add 'Files' and/or 'Thresholds' sheet to Excel file
-2. **Missing channel 2**: Channel 2 is required for tissue region definition - add it to Thresholds sheet
-3. **Image file not found**: Check File Path in Files sheet, ensure file exists
-4. **Invalid channel number**: Channel numbers must be 1-based (1, 2, 3, ...) and exist in image
-5. **Cannot read image**: Ensure image is a valid OME-TIFF file readable by palom
+Pixi isn't installed or not in your system PATH.
 
-### Tips
+1. Reinstall pixi following the installation instructions above
+2. Close and reopen PowerShell
+3. If still not working, try restarting your computer
 
-- Use `--verbose` to see detailed progress and error messages
-- Use `--dry-run` in batch mode to validate before processing
-- Check that all image files are accessible from the machine running the tool
-- Ensure sufficient disk space for output files
-- For large batches, consider processing in smaller groups
+</details>
 
-## License
+<details>
+<summary><b>"Missing channel 2 in Thresholds sheet"</b></summary>
 
-See individual script headers for licensing information.
+Your Excel file doesn't have channel 2. Channel 2 is required for tissue region definition. Add a row for channel 2 with an appropriate threshold (typically DAPI or another nuclear marker).
+
+</details>
+
+<details>
+<summary><b>"Image file does not exist"</b></summary>
+
+The file path in your Excel "Files" sheet is incorrect.
+
+1. Open your Excel file
+2. Check the "File Path" column in the "Files" sheet
+3. Make sure the path is correct and the file exists
+4. Use full paths (e.g., `C:\Images\sample.ome.tif` not `sample.ome.tif`)
+
+</details>
+
+<details>
+<summary><b>"Invalid channel number"</b></summary>
+
+You specified a channel number that doesn't exist in your image.
+
+1. Check how many channels your image has
+2. Make sure all channel numbers in your Thresholds sheet are ≤ the number of channels
+3. Remember: channel numbers start at 1, not 0
+
+</details>
+
+<details>
+<summary><b>Processing takes a long time</b></summary>
+
+This is normal for large images. Processing time depends on image size. For large batches, consider processing files in smaller groups or running overnight.
+
+</details>
+
+### Still Having Issues?
+
+Open an issue on [GitHub](https://github.com/Yu-AnChen/rc-pos-area/issues) with:
+
+- What you did (the button you clicked or command you ran)
+- The error message from the status log
+- Your Excel file structure (without sensitive data)
+
+---
+
+## Tips
+
+- **Test with one file first** using the Single tab to make sure your Excel format is correct
+- **Use Dry run** in the Batch tab to validate before a long processing run
+- **Use descriptive slide names** — "Sample_001" is better than "1"
+- **Keep organized** — use separate folders for different experiments
+- **Save your Excel templates** — reuse for similar experiments
+
+---
+
+## Additional Resources
+
+- **Detailed Documentation**: See the [docs/](docs/) folder for technical details
+- **Issues & Questions**: [GitHub Issues](https://github.com/Yu-AnChen/rc-pos-area/issues)
+- **License**: MIT (see [LICENSE](LICENSE))
