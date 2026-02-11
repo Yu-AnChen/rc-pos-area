@@ -7,14 +7,14 @@ A command-line tool for processing microscopy image analysis data with three mod
 ### From PyPI (when published)
 
 ```bash
-pip install image-analysis-tool
+pip install rc-pos-area
 ```
 
 ### From Source
 
 ```bash
-git clone https://github.com/yourusername/image-analysis-tool.git
-cd image-analysis-tool
+git clone https://github.com/yu-anchen/rc-pos-area.git
+cd rc-pos-area
 pip install .
 ```
 

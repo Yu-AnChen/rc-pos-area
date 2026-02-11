@@ -1,11 +1,11 @@
 # Quick Start Guide
 
-Get started with image-analysis-tool in 5 minutes!
+Get started with rc-pos-area in 5 minutes!
 
 ## 1. Install
 
 ```bash
-pip install image-analysis-tool
+pip install rc-pos-area
 ```
 
 ## 2. Verify Installation

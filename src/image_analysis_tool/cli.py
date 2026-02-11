@@ -22,12 +22,12 @@ from openpyxl.styles import PatternFill
 import matplotlib.pyplot as plt
 
 # Import processing functions
-from image_analysis_tool.processor import (
+from rc_pos_area.processor import (
     validate_excel_file,
     process_single_excel,
     ValidationError
 )
-from image_analysis_tool.report import generate_summary_report
+from rc_pos_area.report import generate_summary_report
 
 
 def setup_argparse() -> argparse.ArgumentParser:

@@ -3,7 +3,7 @@ requires = ["setuptools>=64", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "image-analysis-tool"
+name = "rc-pos-area"
 dynamic = ["version"]
 description = "CLI tool for processing microscopy image analysis data with tissue region metrics"
 readme = "README.md"
@@ -33,9 +33,9 @@ dependencies = [
 dev = ["pytest>=7.0", "black>=23.0", "ruff>=0.1.0"]
 
 [project.scripts]
-image-analysis = "image_analysis_tool.cli:main"
+image-analysis = "rc_pos_area.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/image-analysis-tool"
-Repository = "https://github.com/yourusername/image-analysis-tool"
-Documentation = "https://github.com/yourusername/image-analysis-tool#readme"
+Homepage = "https://github.com/yu-anchen/rc-pos-area"
+Repository = "https://github.com/yu-anchen/rc-pos-area"
+Documentation = "https://github.com/yu-anchen/rc-pos-area#readme"

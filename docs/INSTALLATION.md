@@ -12,15 +12,15 @@
 Once published to PyPI:
 
 ```bash
-pip install image-analysis-tool
+pip install rc-pos-area
 ```
 
 ### Method 2: Install from Source
 
 #### Clone the repository
 ```bash
-git clone https://github.com/yourusername/image-analysis-tool.git
-cd image-analysis-tool
+git clone https://github.com/yu-anchen/rc-pos-area.git
+cd rc-pos-area
 ```
 
 #### Install in development mode
@@ -36,7 +36,7 @@ pip install .
 ### Method 3: Install from GitHub
 
 ```bash
-pip install git+https://github.com/yourusername/image-analysis-tool.git
+pip install git+https://github.com/yu-anchen/rc-pos-area.git
 ```
 
 ## Verify Installation
@@ -88,7 +88,7 @@ pip install --upgrade palom
 On Unix/Linux/macOS, you may need to use `--user` flag:
 
 ```bash
-pip install --user image-analysis-tool
+pip install --user rc-pos-area
 ```
 
 Or use a virtual environment (recommended):
@@ -96,7 +96,7 @@ Or use a virtual environment (recommended):
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install image-analysis-tool
+pip install rc-pos-area
 ```
 
 ### Command Not Found
@@ -104,7 +104,7 @@ pip install image-analysis-tool
 If `image-analysis` command is not found after installation:
 
 1. Check if pip's bin directory is in your PATH
-2. Try using the full path: `python -m image_analysis_tool.cli`
+2. Try using the full path: `python -m rc_pos_area.cli`
 3. Or reinstall in a virtual environment
 
 ## Updating
@@ -112,7 +112,7 @@ If `image-analysis` command is not found after installation:
 To update to the latest version:
 
 ```bash
-pip install --upgrade image-analysis-tool
+pip install --upgrade rc-pos-area
 ```
 
 ## Uninstallation
@@ -120,5 +120,5 @@ pip install --upgrade image-analysis-tool
 To remove the package:
 
 ```bash
-pip uninstall image-analysis-tool
+pip uninstall rc-pos-area
 ```

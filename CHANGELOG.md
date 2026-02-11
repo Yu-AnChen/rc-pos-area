@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2026-02-10
 
 ### Added
-- Initial release of image-analysis-tool package
+- Initial release of rc-pos-area package
 - Three-mode CLI interface (single, batch, report)
 - Comprehensive pre-flight validation for batch processing
 - Tissue region calculation using channel 2 as mask
@@ -52,4 +52,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - palom >=2023.0.0
 - matplotlib >=3.7.0
 
-[0.1.0]: https://github.com/yourusername/image-analysis-tool/releases/tag/v0.1.0
+[0.1.0]: https://github.com/yu-anchen/rc-pos-area/releases/tag/v0.1.0

@@ -6,8 +6,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/image-analysis-tool.git
-cd image-analysis-tool
+git clone https://github.com/yu-anchen/rc-pos-area.git
+cd rc-pos-area
 
 # Create virtual environment
 python -m venv venv
@@ -26,9 +26,9 @@ pip install -e ".[dev]"
 ## Project Structure
 
 ```
-image-analysis-tool/
+rc-pos-area/
 ├── src/
-│   └── image_analysis_tool/
+│   └── rc_pos_area/
 │       ├── __init__.py          # Package initialization and version
 │       ├── cli.py               # Command-line interface
 │       ├── processor.py         # Image processing and validation
@@ -85,7 +85,7 @@ git checkout -b feature/your-feature-name
 
 ### 2. Make Your Changes
 
-Edit files in `src/image_analysis_tool/`
+Edit files in `src/rc_pos_area/`
 
 ### 3. Format and Lint
 
@@ -107,7 +107,7 @@ pytest tests/
 
 ### 5. Update Version
 
-Edit version in `src/image_analysis_tool/__init__.py`:
+Edit version in `src/rc_pos_area/__init__.py`:
 
 ```python
 __version__ = "0.2.0"  # Update as needed
@@ -151,14 +151,14 @@ python -m build
 ```
 
 This creates:
-- `dist/image_analysis_tool-0.1.0.tar.gz` (source distribution)
-- `dist/image_analysis_tool-0.1.0-py3-none-any.whl` (wheel)
+- `dist/rc_pos_area-0.1.0.tar.gz` (source distribution)
+- `dist/rc_pos_area-0.1.0-py3-none-any.whl` (wheel)
 
 ### Test Installation
 
 ```bash
 # Install from local build
-pip install dist/image_analysis_tool-0.1.0-py3-none-any.whl
+pip install dist/rc_pos_area-0.1.0-py3-none-any.whl
 
 # Verify
 image-analysis --help
@@ -176,7 +176,7 @@ pip install twine
 twine upload --repository testpypi dist/*
 
 # Test installation
-pip install --index-url https://test.pypi.org/simple/ image-analysis-tool
+pip install --index-url https://test.pypi.org/simple/ rc-pos-area
 ```
 
 ### Production PyPI
@@ -202,7 +202,7 @@ touch tests/test_cli.py
 ```python
 # tests/test_processor.py
 import pytest
-from image_analysis_tool.processor import validate_excel_file
+from rc_pos_area.processor import validate_excel_file
 
 def test_validation_missing_file():
     errors = validate_excel_file(Path("nonexistent.xlsx"))
@@ -215,7 +215,7 @@ def test_validation_missing_file():
 ```bash
 pytest tests/
 pytest tests/ -v  # Verbose
-pytest tests/ --cov=image_analysis_tool  # With coverage
+pytest tests/ --cov=rc_pos_area  # With coverage
 ```
 
 ## Module Documentation
@@ -247,13 +247,13 @@ def process_single_excel(excel_path: Path, output_dir: Path) -> Path:
 ### Running Locally Without Installing
 
 ```bash
-python -m image_analysis_tool.cli single test.xlsx
+python -m rc_pos_area.cli single test.xlsx
 ```
 
 ### Checking Package Metadata
 
 ```bash
-pip show image-analysis-tool
+pip show rc-pos-area
 ```
 
 ### Cleaning Build Artifacts
