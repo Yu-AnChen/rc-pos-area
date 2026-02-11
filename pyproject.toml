@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "image-analysis-tool"
+dynamic = ["version"]
+description = "CLI tool for processing microscopy image analysis data with tissue region metrics"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Yu-An Chen", email = "atwood12@gmail.com" }]
+keywords = ["microscopy", "image-analysis", "biomedical", "cli"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Image Processing",
+]
+
+dependencies = [
+    "pandas>=2.0.0",
+    "openpyxl>=3.1.0",
+    "numpy>=1.24.0",
+    "dask-image>=2023.0.0",
+    "palom>=2023.0.0",
+    "matplotlib>=3.7.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "black>=23.0", "ruff>=0.1.0"]
+
+[project.scripts]
+image-analysis = "image_analysis_tool.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/image-analysis-tool"
+Repository = "https://github.com/yourusername/image-analysis-tool"
+Documentation = "https://github.com/yourusername/image-analysis-tool#readme"
