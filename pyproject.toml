@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "rc-pos-area"
 dynamic = ["version"]
-description = "CLI tool for processing microscopy image analysis data with tissue region metrics"
+description = "CLI tool for computing and summarizing positive area in a multi-channel WSI"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }

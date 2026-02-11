@@ -33,7 +33,7 @@ from rc_pos_area.report import generate_summary_report
 def setup_argparse() -> argparse.ArgumentParser:
     """Setup command-line argument parser."""
     parser = argparse.ArgumentParser(
-        description='Image Analysis CLI Tool for Microscopy Data',
+        description='CLI Tool for Positive Area Calculation',
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     

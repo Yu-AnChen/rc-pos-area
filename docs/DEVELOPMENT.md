@@ -98,8 +98,8 @@ ruff check src/
 
 ```bash
 # Manual testing
-image-analysis --help
-image-analysis single test_file.xlsx
+pos-area --help
+pos-area single test_file.xlsx
 
 # Unit tests (when implemented)
 pytest tests/
@@ -161,7 +161,7 @@ This creates:
 pip install dist/rc_pos_area-0.1.0-py3-none-any.whl
 
 # Verify
-image-analysis --help
+pos-area --help
 ```
 
 ## Publishing

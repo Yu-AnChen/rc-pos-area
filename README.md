@@ -1,30 +1,28 @@
-# Image Analysis CLI Tool
+# `rc-pos-area` CLI Tool
 
-A command-line tool for processing microscopy image analysis data with three modes: single file processing, batch processing, and report generation.
+A command-line tool for calculating and summarizing positive area in image channels of a multiplex whole slide scan based on the thresholds provided by the user.
 
 ## Installation
 
-### From PyPI (when published)
+### Using [pixi](https://pixi.prefix.dev/) (recommended)
 
-```bash
-pip install rc-pos-area
-```
+1. [Install pixi](https://pixi.prefix.dev/latest/installation/#__tabbed_1_2)
+2. Run the following command in command prompt or terminal:
 
-### From Source
+    ```bash
+    mkdir rc-pos-area-env && cd rc-pos-area-env
 
-```bash
-git clone https://github.com/yu-anchen/rc-pos-area.git
-cd rc-pos-area
-pip install .
-```
+    curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.toml
+    curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.lock
+    
+    pixi install
+    ```
 
-### Development Installation
+3. To run the tool, use `pixi run`:
 
-```bash
-pip install -e ".[dev]"
-```
-
-See [Installation Guide](docs/INSTALLATION.md) for more details.
+    ```bash
+    pixi run pos-area --help
+    ```
 
 ## Requirements
 
@@ -39,26 +37,30 @@ See [Installation Guide](docs/INSTALLATION.md) for more details.
 
 ## Usage
 
-Once installed, the tool is available as the `image-analysis` command.
+> [!NOTE]
+> **Note:** If you installed using `pixi`, prefix the commands with `pixi run`.
+> For example: `pixi run pos-area --help`.
+
+Once installed, the tool is available as the `pos-area` command.
 
 ### Mode 1: Single File Processing
 
 Process a single Excel file:
 
 ```bash
-image-analysis single <input_excel> [--output-dir <dir>]
+pos-area single <input_excel> [--output-dir <dir>]
 ```
 
 **Examples:**
 ```bash
 # Process F8288.xlsx, output to default 'results/' directory
-image-analysis single F8288.xlsx
+pos-area single F8288.xlsx
 
 # Process with custom output directory
-image-analysis single F8288.xlsx --output-dir /path/to/output
+pos-area single F8288.xlsx --output-dir /path/to/output
 
 # Verbose output
-image-analysis single F8288.xlsx --verbose
+pos-area single F8288.xlsx --verbose
 ```
 
 **Output:** Creates `F8288_processed.xlsx` in the output directory.
@@ -68,22 +70,22 @@ image-analysis single F8288.xlsx --verbose
 Process all Excel files in a directory:
 
 ```bash
-image-analysis batch <input_dir> [--output-dir <dir>] [--dry-run]
+pos-area batch <input_dir> [--output-dir <dir>] [--dry-run]
 ```
 
 **Examples:**
 ```bash
 # Process all .xlsx files in current directory
-image-analysis batch .
+pos-area batch .
 
 # Process files with custom output directory
-image-analysis batch /path/to/excel/files --output-dir processed_results
+pos-area batch /path/to/excel/files --output-dir processed_results
 
 # Dry run - validate only, don't process
-image-analysis batch . --dry-run
+pos-area batch . --dry-run
 
 # Quiet mode
-image-analysis batch . --quiet
+pos-area batch . --quiet
 ```
 
 **Validation:** Before processing, the tool validates all files and checks:
@@ -104,19 +106,19 @@ If any file fails validation, the tool will report all issues and exit without p
 Generate a summary report from processed files:
 
 ```bash
-image-analysis report <processed_dir> [--output <filename>]
+pos-area report <processed_dir> [--output <filename>]
 ```
 
 **Examples:**
 ```bash
 # Generate report from processed files in results/
-image-analysis report results/
+pos-area report results/
 
 # Specify custom output filename
-image-analysis report results/ --output MyReport.xlsx
+pos-area report results/ --output MyReport.xlsx
 
 # Verbose output
-image-analysis report results/ --verbose
+pos-area report results/ --verbose
 ```
 
 **Output:** Creates `Summary-{timestamp}.xlsx` (or custom filename) with:
@@ -228,10 +230,10 @@ Groups are assigned distinct colors from the Tab10 color palette.
 
 ```bash
 # 1. Process all files in a directory
-image-analysis batch /data/experiments/batch1/ --output-dir results/batch1/
+pos-area batch /data/experiments/batch1/ --output-dir results/batch1/
 
 # 2. Generate summary report
-image-analysis report results/batch1/
+pos-area report results/batch1/
 
 # Result: Summary-20260210_143022.xlsx with all results
 ```
@@ -240,16 +242,16 @@ image-analysis report results/batch1/
 
 ```bash
 # 1. Dry run to check all files
-image-analysis batch /data/experiments/ --dry-run
+pos-area batch /data/experiments/ --dry-run
 
 # 2. Fix any issues reported
 # ... edit Excel files ...
 
 # 3. Process after validation passes
-image-analysis batch /data/experiments/
+pos-area batch /data/experiments/
 
 # 4. Process a single problematic file separately
-image-analysis single /data/experiments/problematic_file.xlsx --verbose
+pos-area single /data/experiments/problematic_file.xlsx --verbose
 ```
 
 ## Troubleshooting

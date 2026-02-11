@@ -44,7 +44,7 @@ pip install git+https://github.com/yu-anchen/rc-pos-area.git
 After installation, verify the tool is available:
 
 ```bash
-image-analysis --help
+pos-area --help
 ```
 
 You should see the help message with available commands.
@@ -101,7 +101,7 @@ pip install rc-pos-area
 
 ### Command Not Found
 
-If `image-analysis` command is not found after installation:
+If `pos-area` command is not found after installation:
 
 1. Check if pip's bin directory is in your PATH
 2. Try using the full path: `python -m rc_pos_area.cli`

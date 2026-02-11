@@ -11,7 +11,7 @@ pip install rc-pos-area
 ## 2. Verify Installation
 
 ```bash
-image-analysis --help
+pos-area --help
 ```
 
 ## 3. Prepare Your Data
@@ -35,7 +35,7 @@ Create an Excel file with two sheets:
 ## 4. Process a Single File
 
 ```bash
-image-analysis single my_experiment.xlsx
+pos-area single my_experiment.xlsx
 ```
 
 Output: `results/my_experiment_processed.xlsx`
@@ -44,16 +44,16 @@ Output: `results/my_experiment_processed.xlsx`
 
 ```bash
 # Validate first (dry-run)
-image-analysis batch /path/to/excel/files --dry-run
+pos-area batch /path/to/excel/files --dry-run
 
 # Process all files
-image-analysis batch /path/to/excel/files
+pos-area batch /path/to/excel/files
 ```
 
 ## 6. Generate Summary Report
 
 ```bash
-image-analysis report results/
+pos-area report results/
 ```
 
 Output: `results/Summary-{timestamp}.xlsx`
@@ -64,10 +64,10 @@ Output: `results/Summary-{timestamp}.xlsx`
 
 ```bash
 # Step 1: Batch process
-image-analysis batch ./experiments/ --output-dir ./results/
+pos-area batch ./experiments/ --output-dir ./results/
 
 # Step 2: Generate report
-image-analysis report ./results/
+pos-area report ./results/
 
 # Done! Check results/Summary-*.xlsx
 ```
@@ -76,20 +76,20 @@ image-analysis report ./results/
 
 ```bash
 # Verbose output
-image-analysis batch ./data/ --verbose
+pos-area batch ./data/ --verbose
 
 # Custom output directory
-image-analysis single sample.xlsx --output-dir ./processed/
+pos-area single sample.xlsx --output-dir ./processed/
 
 # Quiet mode (minimal output)
-image-analysis batch ./data/ --quiet
+pos-area batch ./data/ --quiet
 ```
 
 ### Validation Only
 
 ```bash
 # Check files without processing
-image-analysis batch ./data/ --dry-run
+pos-area batch ./data/ --dry-run
 ```
 
 ## Output Explained
@@ -146,9 +146,9 @@ Groups files by channel configuration with:
 
 ```bash
 # Help for specific command
-image-analysis single --help
-image-analysis batch --help
-image-analysis report --help
+pos-area single --help
+pos-area batch --help
+pos-area report --help
 ```
 
 Need more help? Check the [documentation](../README.md) or open an issue on GitHub.
