@@ -33,7 +33,7 @@ dependencies = [
 dev = ["pytest>=7.0", "black>=23.0", "ruff>=0.1.0"]
 
 [project.scripts]
-image-analysis = "rc_pos_area.cli:main"
+pos-area = "rc_pos_area.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/yu-anchen/rc-pos-area"
