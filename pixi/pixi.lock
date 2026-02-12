@@ -70,7 +70,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/81/c4/34e93fe5f5429d7570ec1fa436f1986fb1f00c3e0f43a589fe2bbcd22c3f/pytz-2025.2-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/01/e2/06e08230c26049740b2773952fbb12cc7186e5df655a73b1c30ba493e864/pywavelets-1.8.0-cp310-cp310-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/2a/fa/926c003379b19fca39dd4634818b00dec6c62d87faf628d1394e137354d4/pyyaml-6.0.3-cp310-cp310-win_amd64.whl
-      - pypi: git+https://github.com/Yu-AnChen/rc-pos-area.git#9783ca6ce2123d11acae73ed8035e90f687b70fc
+      - pypi: git+https://github.com/Yu-AnChen/rc-pos-area.git#1de10bd74bd1cf8da78d72a31f4072eba6d559e4
       - pypi: https://files.pythonhosted.org/packages/d4/21/60ee84932bf4b72398769759c9d30d63771967b0f430e28d5c2e7f326acc/scikit_image-0.19.3-cp310-cp310-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/7f/9b/87961813c34adbca21a6b3f6b2bea344c43b30217a6d24cc437c6147f3e8/scikit_learn-1.7.2-cp310-cp310-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/d1/84/55bc4881973d3f79b479a5a2e2df61c8c9a04fcb986a213ac9c02cfb659b/scipy-1.15.3-cp310-cp310-win_amd64.whl
@@ -1109,9 +1109,9 @@ packages:
   version: 6.0.3
   sha256: bdb2c67c6c1390b63c6ff89f210c8fd09d9a1217a465701eac7316313c915e4c
   requires_python: '>=3.8'
-- pypi: git+https://github.com/Yu-AnChen/rc-pos-area.git#9783ca6ce2123d11acae73ed8035e90f687b70fc
+- pypi: git+https://github.com/Yu-AnChen/rc-pos-area.git#1de10bd74bd1cf8da78d72a31f4072eba6d559e4
   name: rc-pos-area
-  version: 0.1.dev6+g9783ca6ce
+  version: 0.1.dev11+g1de10bd74
   requires_dist:
   - pandas>=2.0.0
   - openpyxl>=3.1.0
