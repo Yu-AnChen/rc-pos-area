@@ -30,18 +30,18 @@ def rgb_to_hex(rgb: Tuple[int, int, int]) -> str:
     return '{:02X}{:02X}{:02X}'.format(*rgb)
 
 
-def get_channel_signature(thresholds_df: pd.DataFrame) -> Tuple[int, ...]:
+def get_channel_signature(thresholds_df: pd.DataFrame) -> Tuple:
     """
-    Get the channel signature (sorted tuple of channel numbers) from a thresholds dataframe.
-    
+    Get the channel signature (sorted tuple of (channel, antibody) pairs) from a thresholds dataframe.
+
     Args:
-        thresholds_df: DataFrame with 'Channel #' column
-        
+        thresholds_df: DataFrame with 'Channel #' and 'Antibody' columns
+
     Returns:
-        Sorted tuple of channel numbers
+        Tuple of (channel, antibody) pairs sorted by channel number
     """
-    channels = sorted(thresholds_df['Channel #'].unique())
-    return tuple(channels)
+    pairs = sorted(zip(thresholds_df['Channel #'], thresholds_df['Antibody']))
+    return tuple(pairs)
 
 
 def assign_groups(processed_files: List[Path], verbose: bool = False) -> Dict[Tuple[int, ...], List[Dict]]:
@@ -141,7 +141,8 @@ def generate_summary_report(processed_files: List[Path], output_path: Path,
     if not quiet:
         print(f"   Found {len(groups)} group(s):")
         for channel_sig, info in group_assignments.items():
-            print(f"      Group {info['group_num']}: Channels {list(channel_sig)} ({len(groups[channel_sig])} file(s))")
+            ch_summary = ', '.join(f"Ch{ch}:{ab}" for ch, ab in channel_sig)
+            print(f"      Group {info['group_num']}: {ch_summary} ({len(groups[channel_sig])} file(s))")
     
     # Create workbook
     wb = Workbook()
