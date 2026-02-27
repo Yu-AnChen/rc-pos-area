@@ -257,7 +257,7 @@ def mode_report(args, verbose: bool, quiet: bool):
     try:
         generate_summary_report(processed_files, output_file, verbose, quiet)
         if not quiet:
-            print(f"\n✓ Summary report created: {output_file}")
+            print(f"\n✓ Summary report created: {output_file.resolve()}")
     except Exception as e:
         print(f"❌ Error generating report: {e}")
         if verbose:
