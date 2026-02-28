@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Intensity statistics for two new regions per channel: **T excl P** (tissue but not positive) and **BG** (outside tissue), in addition to the existing **P in T** region
+- Zero-fraction columns (`Fraction 0 P in T (%)`, `Fraction 0 T excl P (%)`, `Fraction 0 BG (%)`) reporting the percentage of zero-valued pixels in each region
+- `_intensity_stats` helper function for computing mean, median, and zero fraction
+
+### Changed
+- Mean and median intensity calculations now **exclude zero-valued pixels** (zeros treated as imaging artifacts)
+- Intensity stats now use raw, unsmoothed pixel values (unchanged from before, but now explicitly documented)
+- Output goes from 10 to 18 columns per channel in processed Excel files
+
 ## [0.1.0] - 2026-02-10
 
 ### Added

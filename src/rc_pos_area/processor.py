@@ -16,6 +16,20 @@ class ValidationError(Exception):
     pass
 
 
+def _intensity_stats(pixels_np: np.ndarray):
+    """
+    Compute mean, median (excluding zeros), and zero fraction for a pixel array.
+    Returns (mean, median, zero_fraction) — each is float or np.nan.
+    """
+    if len(pixels_np) == 0:
+        return np.nan, np.nan, np.nan
+    zero_frac = float(np.sum(pixels_np == 0) / len(pixels_np))
+    nonzero = pixels_np[pixels_np != 0]
+    if len(nonzero) == 0:
+        return np.nan, np.nan, zero_frac
+    return float(np.mean(nonzero)), float(np.median(nonzero)), zero_frac
+
+
 def validate_excel_file(excel_path: Path) -> List[str]:
     """
     Validate an Excel file before processing.
@@ -213,36 +227,46 @@ def process_single_excel(excel_path: Path, output_dir: Path,
     tissue_img = reader.pyramid[PYRAMID_LEVEL][channel_2_idx].astype('float32')
     tissue_gimg = dask_image.ndfilters.gaussian_filter(tissue_img, GAUSSIAN_SIGMA)
     tissue_mask = tissue_gimg > channel_2_threshold
-    tissue_area = int(np.sum(tissue_mask)) * PIXEL_SIZE**2
-    
+    tissue_mask_np = np.asarray(tissue_mask)
+    tissue_area = int(np.sum(tissue_mask_np)) * PIXEL_SIZE**2
+
     if verbose:
         print(f"   Tissue area: {tissue_area:.2f} µm^2")
-    
+
     # Now process all channels (including channel 2)
     for cc, tt in list(thresholds_df['Threshold'].items()):
         # Convert from 1-based (Excel) to 0-based (Python) indexing
         channel_idx = cc - 1
         img = reader.pyramid[PYRAMID_LEVEL][channel_idx].astype('float32')
         gimg = dask_image.ndfilters.gaussian_filter(img, GAUSSIAN_SIGMA)
-        
-        # Overall metrics
-        thresholds_df.loc[cc, 'Area (µm^2)'] = gimg.size * PIXEL_SIZE**2
-        thresholds_df.loc[cc, 'Area P (µm^2)'] = int(np.sum(gimg > tt)) * PIXEL_SIZE**2
 
-        # Tissue region metrics
-        thresholds_df.loc[cc, 'Area T (µm^2)'] = tissue_area
-        pos_tissue_mask = (gimg > tt) & tissue_mask
-        positive_in_tissue = np.sum(pos_tissue_mask)
-        thresholds_df.loc[cc, 'Area P in T (µm^2)'] = int(positive_in_tissue) * PIXEL_SIZE**2
+        # --- Phase 1: masks and area metrics (from smoothed image) ---
+        gimg_np = np.asarray(gimg)
 
-        # Mean and median intensity (raw pixels) within positive tissue region
-        if int(positive_in_tissue) > 0:
-            pos_tissue_pixels = img[pos_tissue_mask]
-            thresholds_df.loc[cc, 'Mean Intensity P in T'] = float(np.mean(pos_tissue_pixels))
-            thresholds_df.loc[cc, 'Median Intensity P in T'] = float(np.median(pos_tissue_pixels))
-        else:
-            thresholds_df.loc[cc, 'Mean Intensity P in T'] = np.nan
-            thresholds_df.loc[cc, 'Median Intensity P in T'] = np.nan
+        pos_mask      = gimg_np > tt
+        p_in_t_mask   = pos_mask & tissue_mask_np
+        t_excl_p_mask = tissue_mask_np & ~pos_mask
+        bg_mask       = ~tissue_mask_np
+
+        thresholds_df.loc[cc, 'Area (µm^2)']       = gimg_np.size * PIXEL_SIZE**2
+        thresholds_df.loc[cc, 'Area P (µm^2)']      = int(np.sum(pos_mask)) * PIXEL_SIZE**2
+        thresholds_df.loc[cc, 'Area T (µm^2)']      = tissue_area
+        thresholds_df.loc[cc, 'Area P in T (µm^2)'] = int(np.sum(p_in_t_mask)) * PIXEL_SIZE**2
+        del gimg_np
+
+        # --- Phase 2: intensity stats (from raw unsmoothed image) ---
+        img_np = np.asarray(img)
+
+        for col_suffix, mask in [
+            ('P in T',   p_in_t_mask),
+            ('T excl P', t_excl_p_mask),
+            ('BG',       bg_mask),
+        ]:
+            mean, median, zero_frac = _intensity_stats(img_np[mask])
+            thresholds_df.loc[cc, f'Mean Intensity {col_suffix}']   = mean
+            thresholds_df.loc[cc, f'Median Intensity {col_suffix}'] = median
+            thresholds_df.loc[cc, f'Fraction 0 {col_suffix} (%)']  = zero_frac * 100
+        del img_np
 
     # Calculate positive fractions
     thresholds_df['Fraction P (%)'] = 100 * (
@@ -257,8 +281,14 @@ def process_single_excel(excel_path: Path, output_dir: Path,
     thresholds_df[area_cols] = thresholds_df[area_cols].round(2)
     thresholds_df['Fraction P (%)'] = thresholds_df['Fraction P (%)'].round(5)
     thresholds_df['Fraction P in T (%)'] = thresholds_df['Fraction P in T (%)'].round(5)
-    thresholds_df['Mean Intensity P in T'] = thresholds_df['Mean Intensity P in T'].round(2)
-    thresholds_df['Median Intensity P in T'] = thresholds_df['Median Intensity P in T'].round(2)
+    intensity_cols = [
+        'Mean Intensity P in T', 'Median Intensity P in T',
+        'Mean Intensity T excl P', 'Median Intensity T excl P',
+        'Mean Intensity BG', 'Median Intensity BG',
+    ]
+    thresholds_df[intensity_cols] = thresholds_df[intensity_cols].round(2)
+    frac_zero_cols = ['Fraction 0 P in T (%)', 'Fraction 0 T excl P (%)', 'Fraction 0 BG (%)']
+    thresholds_df[frac_zero_cols] = thresholds_df[frac_zero_cols].round(5)
     
     if verbose:
         print(f"   Writing results to {output_filename}...")

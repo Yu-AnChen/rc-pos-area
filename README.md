@@ -265,21 +265,40 @@ pixi run pos-area report my_results\ --output Experiment_Summary.xlsx
 
 Each processed file includes these calculations:
 
+**Area metrics**
+
 | Column | What It Means |
 |--------|---------------|
 | **Area (µm²)** | Total area of the entire image |
-| **Positive Area (µm²)** | Area where signal is above threshold (whole image) |
-| **Positive Fraction (%)** | Percentage of image that's positive |
-| **Tissue Area (µm²)** | Area of the tissue region (from channel 2) |
-| **Positive Area in Tissue (µm²)** | Positive area only within tissue |
-| **Positive Fraction in Tissue (%)** | Percentage of tissue that's positive |
+| **Area P (µm²)** | Area where signal is above threshold (whole image) |
+| **Area T (µm²)** | Area of the tissue region (defined by channel 2) |
+| **Area P in T (µm²)** | Positive area only within tissue |
+| **Fraction P (%)** | Percentage of the whole image that is positive |
+| **Fraction P in T (%)** | Percentage of tissue that is positive |
 
-**Why two sets of metrics?**
+**Intensity statistics** (computed on raw, unsmoothed pixel values; zeros excluded)
 
-- **Whole image metrics** include everything (tissue + background)
-- **Tissue metrics** focus only on the tissue region defined by channel 2
+Three regions are reported — **P in T** (positive within tissue), **T excl P** (tissue but not positive), and **BG** (outside tissue):
 
-This gives you more accurate quantification by excluding background areas.
+| Column | What It Means |
+|--------|---------------|
+| **Mean Intensity P in T** | Mean intensity of positive-in-tissue pixels (zeros excluded) |
+| **Median Intensity P in T** | Median intensity of positive-in-tissue pixels (zeros excluded) |
+| **Fraction 0 P in T (%)** | Percentage of zero-valued pixels in the P in T region |
+| **Mean Intensity T excl P** | Mean intensity of tissue-not-positive pixels (zeros excluded) |
+| **Median Intensity T excl P** | Median intensity of tissue-not-positive pixels (zeros excluded) |
+| **Fraction 0 T excl P (%)** | Percentage of zero-valued pixels in the T excl P region |
+| **Mean Intensity BG** | Mean intensity of background pixels (zeros excluded) |
+| **Median Intensity BG** | Median intensity of background pixels (zeros excluded) |
+| **Fraction 0 BG (%)** | Percentage of zero-valued pixels in the background region |
+
+**Why three regions?**
+
+- **P in T** — the signal of interest: positive cells within tissue
+- **T excl P** — non-positive tissue background; helps assess separation between positive and negative cells
+- **BG** — outside-tissue pixels; useful for quality control (should be low signal)
+
+Zeros are excluded from mean/median calculations as they represent imaging artifacts rather than real signal.
 
 ---
 
