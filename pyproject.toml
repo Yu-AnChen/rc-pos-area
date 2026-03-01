@@ -8,13 +8,12 @@ dynamic = ["version"]
 description = "CLI tool for computing and summarizing positive area in a multi-channel WSI"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license-files = ["LICEN[CS]E*"]
 authors = [{ name = "Yu-An Chen", email = "atwood12@gmail.com" }]
 keywords = ["microscopy", "image-analysis", "biomedical", "cli"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Topic :: Scientific/Engineering :: Image Processing",

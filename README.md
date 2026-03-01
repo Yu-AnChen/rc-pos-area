@@ -29,10 +29,10 @@ We use **pixi** to set up everything automatically. Pixi is a package manager th
 
 ### Step 1: Install pixi
 
-Open **PowerShell** (search for "PowerShell" in the Start menu) and run:
+Open **Command Prompt** (search for "Command Prompt" in the Start menu) and run:
 
-```powershell
-iwr -useb https://pixi.sh/install.ps1 | iex
+```cmd
+powershell -ExecutionPolicy Bypass -c "irm -useb https://pixi.sh/install.ps1 | iex"
 ```
 
 Or download the installer from [pixi.sh](https://pixi.prefix.dev/latest/installation/#__tabbed_1_2).
@@ -50,19 +50,16 @@ curl -fsSL https://pixi.sh/install.sh | bash
 
 ### Step 2: Set Up the Environment
 
-Run these commands in PowerShell:
+Run these commands in Command Prompt:
 
-```powershell
-# Create and enter a new folder
+```cmd
 mkdir rc-pos-area-env
 cd rc-pos-area-env
 
-# Download configuration files
 curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.toml
 curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.lock
 
-# Install everything
-pixi install
+pixi install --frozen
 ```
 
 **This may take a few minutes** the first time as it downloads Python and all required libraries.
@@ -76,14 +73,14 @@ mkdir rc-pos-area-env && cd rc-pos-area-env
 curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.toml
 curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.lock
 
-pixi install
+pixi install -frozen
 ```
 
 </details>
 
 ### Step 3: Verify Installation
 
-```powershell
+```cmd
 pixi run pos-area --help
 ```
 
@@ -91,7 +88,7 @@ You should see a help message listing available commands.
 
 To confirm the installed version:
 
-```powershell
+```cmd
 pixi run pos-area --version
 ```
 
@@ -99,13 +96,14 @@ pixi run pos-area --version
 
 ## Updating
 
-When a new version is released, update by replacing your local `pixi.toml` and `pixi.lock` files and re-running `pixi install`.
+When a new version is released, update by replacing your local `pixi.toml` and `pixi.lock` files and re-running `pixi install -frozen`.
 
-```powershell
-# From inside your rc-pos-area-env folder:
+Run these commands in Command Prompt (from inside your rc-pos-area-env folder):
+
+```cmd
 curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.toml
 curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.lock
-pixi install
+pixi install -frozen
 ```
 
 <details>
@@ -114,14 +112,14 @@ pixi install
 ```bash
 curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.toml
 curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.lock
-pixi install
+pixi install -frozen
 ```
 
 </details>
 
 Verify the update:
 
-```powershell
+```cmd
 pixi run pos-area --version
 ```
 
@@ -163,7 +161,7 @@ The graphical interface is the easiest way to use this tool — no command-line 
 
 ### Launching the GUI
 
-```powershell
+```cmd
 pixi run parea
 ```
 
@@ -218,13 +216,13 @@ The log area at the bottom of the window shows progress and any errors. Use the 
 
 All commands follow this pattern:
 
-```powershell
+```cmd
 pixi run pos-area <mode> <input> [options]
 ```
 
 ### Process a Single File
 
-```powershell
+```cmd
 pixi run pos-area single my_sample.xlsx
 pixi run pos-area single my_sample.xlsx --output-dir my_results
 pixi run pos-area single my_sample.xlsx --verbose
@@ -232,7 +230,7 @@ pixi run pos-area single my_sample.xlsx --verbose
 
 ### Process Multiple Files (Batch)
 
-```powershell
+```cmd
 pixi run pos-area batch my_excel_files\
 
 # Validate only, don't process
@@ -244,7 +242,7 @@ pixi run pos-area batch my_excel_files\ --quiet
 
 ### Generate Summary Report
 
-```powershell
+```cmd
 pixi run pos-area report results\
 pixi run pos-area report results\ --output Experiment_Summary.xlsx
 ```
@@ -280,7 +278,7 @@ You have 10 samples from an experiment. Each has an OME-TIFF image file and an E
 <details>
 <summary><b>Using the command line</b></summary>
 
-```powershell
+```cmd
 # 1. Validate all files
 pixi run pos-area batch experiment_data\ --dry-run
 
@@ -346,7 +344,7 @@ Zeros are excluded from mean/median calculations as they represent imaging artif
 Pixi isn't installed or not in your system PATH.
 
 1. Reinstall pixi following the installation instructions above
-2. Close and reopen PowerShell
+2. Close and reopen Command Prompt
 3. If still not working, try restarting your computer
 
 </details>
