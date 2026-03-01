@@ -89,6 +89,42 @@ pixi run pos-area --help
 
 You should see a help message listing available commands.
 
+To confirm the installed version:
+
+```powershell
+pixi run pos-area --version
+```
+
+---
+
+## Updating
+
+When a new version is released, update by replacing your local `pixi.toml` and `pixi.lock` files and re-running `pixi install`.
+
+```powershell
+# From inside your rc-pos-area-env folder:
+curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.toml
+curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.lock
+pixi install
+```
+
+<details>
+<summary><b>Mac / Linux</b></summary>
+
+```bash
+curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.toml
+curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.lock
+pixi install
+```
+
+</details>
+
+Verify the update:
+
+```powershell
+pixi run pos-area --version
+```
+
 ---
 
 ## Preparing Your Input Files
