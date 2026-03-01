@@ -14,6 +14,7 @@ from pathlib import Path
 from tkinter import filedialog, scrolledtext, ttk
 from typing import List
 
+import rc_pos_area
 from rc_pos_area.processor import process_single_excel, validate_excel_file
 from rc_pos_area.report import generate_summary_report
 
@@ -412,7 +413,7 @@ class App:
 
 def main():
     root = tk.Tk()
-    root.title("Positive Area Calculator")
+    root.title(f"Positive Area Calculator v{rc_pos_area.__version__}")
     root.geometry("700x550")
     root.minsize(600, 450)
     App(root)

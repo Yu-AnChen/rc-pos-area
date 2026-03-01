@@ -14,6 +14,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple
 
+import rc_pos_area
 
 # Import processing functions
 from rc_pos_area.processor import (
@@ -28,6 +29,9 @@ def setup_argparse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="CLI Tool for Positive Area Calculation",
         formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        "--version", action="version", version=f"%(prog)s {rc_pos_area.__version__}"
     )
 
     # Global options
