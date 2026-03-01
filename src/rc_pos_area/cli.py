@@ -9,22 +9,14 @@ This tool provides three modes:
 """
 
 import argparse
-import os
-import shutil
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-from openpyxl import load_workbook
-from openpyxl.styles import PatternFill
 
 # Import processing functions
 from rc_pos_area.processor import (
-    ValidationError,
     process_single_excel,
     validate_excel_file,
 )

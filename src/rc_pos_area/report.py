@@ -5,9 +5,8 @@ Report generator module for creating summary reports from processed files.
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-import matplotlib.pyplot as plt
 import pandas as pd
-from openpyxl import Workbook, load_workbook
+from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill
 
 # Tab10 color palette (RGB tuples)
@@ -242,7 +241,7 @@ def generate_summary_report(processed_files: List[Path], output_path: Path,
                     try:
                         if cell.value:
                             max_length = max(max_length, len(str(cell.value)))
-                    except:
+                    except Exception:
                         pass
                 adjusted_width = min(max_length + 2, 30)
                 ws.column_dimensions[column_letter].width = adjusted_width

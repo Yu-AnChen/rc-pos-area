@@ -2,10 +2,9 @@
 Image processor module for validating and processing microscopy data.
 """
 
-import os
 import shutil
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 import numpy as np
 import pandas as pd
