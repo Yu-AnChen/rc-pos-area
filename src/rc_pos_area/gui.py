@@ -3,17 +3,18 @@ Tkinter GUI for the Positive Area Calculator.
 """
 
 import matplotlib
+
 matplotlib.use("Agg")
 
-import tkinter as tk
-from tkinter import ttk, filedialog, scrolledtext
-import threading
 import queue
-from pathlib import Path
+import threading
+import tkinter as tk
 from datetime import datetime
+from pathlib import Path
+from tkinter import filedialog, scrolledtext, ttk
 from typing import List
 
-from rc_pos_area.processor import validate_excel_file, process_single_excel
+from rc_pos_area.processor import process_single_excel, validate_excel_file
 from rc_pos_area.report import generate_summary_report
 
 
@@ -21,7 +22,8 @@ def _find_excel_files(directory: Path) -> List[Path]:
     """Find unprocessed Excel files in a directory."""
     excel_files = list(directory.glob("*.xlsx"))
     excel_files = [
-        f for f in excel_files
+        f
+        for f in excel_files
         if not f.name.startswith("~$") and not f.name.endswith("_processed.xlsx")
     ]
     return sorted(excel_files)
@@ -54,25 +56,35 @@ class App:
         self.single_output = tk.StringVar(value="results")
 
         ttk.Label(tab, text="Input Excel:").grid(row=0, column=0, sticky="w", pady=4)
-        ttk.Entry(tab, textvariable=self.single_input, width=50).grid(row=0, column=1, padx=4)
-        ttk.Button(tab, text="Browse...", command=lambda: self._browse_file(self.single_input)).grid(
-            row=0, column=2
+        ttk.Entry(tab, textvariable=self.single_input, width=50).grid(
+            row=0, column=1, padx=4
         )
+        ttk.Button(
+            tab, text="Browse...", command=lambda: self._browse_file(self.single_input)
+        ).grid(row=0, column=2)
 
         ttk.Label(tab, text="Output Dir:").grid(row=1, column=0, sticky="w", pady=4)
-        ttk.Entry(tab, textvariable=self.single_output, width=50).grid(row=1, column=1, padx=4)
+        ttk.Entry(tab, textvariable=self.single_output, width=50).grid(
+            row=1, column=1, padx=4
+        )
         ttk.Button(
-            tab, text="Browse...", command=lambda: self._browse_directory(self.single_output)
+            tab,
+            text="Browse...",
+            command=lambda: self._browse_directory(self.single_output),
         ).grid(row=1, column=2)
 
         btn_frame = ttk.Frame(tab)
         btn_frame.grid(row=2, column=0, columnspan=3, pady=12)
 
-        btn_validate = ttk.Button(btn_frame, text="Validate", command=self._on_validate_single)
+        btn_validate = ttk.Button(
+            btn_frame, text="Validate", command=self._on_validate_single
+        )
         btn_validate.pack(side="left", padx=4)
         self.action_buttons.append(btn_validate)
 
-        btn_process = ttk.Button(btn_frame, text="Process", command=self._on_process_single)
+        btn_process = ttk.Button(
+            btn_frame, text="Process", command=self._on_process_single
+        )
         btn_process.pack(side="left", padx=4)
         self.action_buttons.append(btn_process)
 
@@ -87,20 +99,28 @@ class App:
         self.batch_dry_run = tk.BooleanVar(value=False)
 
         ttk.Label(tab, text="Input Dir:").grid(row=0, column=0, sticky="w", pady=4)
-        ttk.Entry(tab, textvariable=self.batch_input, width=50).grid(row=0, column=1, padx=4)
+        ttk.Entry(tab, textvariable=self.batch_input, width=50).grid(
+            row=0, column=1, padx=4
+        )
         ttk.Button(
-            tab, text="Browse...", command=lambda: self._browse_directory(self.batch_input)
+            tab,
+            text="Browse...",
+            command=lambda: self._browse_directory(self.batch_input),
         ).grid(row=0, column=2)
 
         ttk.Label(tab, text="Output Dir:").grid(row=1, column=0, sticky="w", pady=4)
-        ttk.Entry(tab, textvariable=self.batch_output, width=50).grid(row=1, column=1, padx=4)
+        ttk.Entry(tab, textvariable=self.batch_output, width=50).grid(
+            row=1, column=1, padx=4
+        )
         ttk.Button(
-            tab, text="Browse...", command=lambda: self._browse_directory(self.batch_output)
+            tab,
+            text="Browse...",
+            command=lambda: self._browse_directory(self.batch_output),
         ).grid(row=1, column=2)
 
-        ttk.Checkbutton(tab, text="Dry run (validate only)", variable=self.batch_dry_run).grid(
-            row=2, column=0, columnspan=3, sticky="w", pady=4
-        )
+        ttk.Checkbutton(
+            tab, text="Dry run (validate only)", variable=self.batch_dry_run
+        ).grid(row=2, column=0, columnspan=3, sticky="w", pady=4)
 
         btn_batch = ttk.Button(tab, text="Run Batch", command=self._on_run_batch)
         btn_batch.grid(row=3, column=0, columnspan=3, pady=12)
@@ -116,18 +136,28 @@ class App:
         self.report_output = tk.StringVar()
 
         ttk.Label(tab, text="Processed Dir:").grid(row=0, column=0, sticky="w", pady=4)
-        ttk.Entry(tab, textvariable=self.report_input, width=50).grid(row=0, column=1, padx=4)
+        ttk.Entry(tab, textvariable=self.report_input, width=50).grid(
+            row=0, column=1, padx=4
+        )
         ttk.Button(
-            tab, text="Browse...", command=lambda: self._browse_directory(self.report_input)
+            tab,
+            text="Browse...",
+            command=lambda: self._browse_directory(self.report_input),
         ).grid(row=0, column=2)
 
         ttk.Label(tab, text="Output File:").grid(row=1, column=0, sticky="w", pady=4)
-        ttk.Entry(tab, textvariable=self.report_output, width=50).grid(row=1, column=1, padx=4)
+        ttk.Entry(tab, textvariable=self.report_output, width=50).grid(
+            row=1, column=1, padx=4
+        )
         ttk.Button(
-            tab, text="Browse...", command=lambda: self._browse_save_file(self.report_output)
+            tab,
+            text="Browse...",
+            command=lambda: self._browse_save_file(self.report_output),
         ).grid(row=1, column=2)
 
-        btn_report = ttk.Button(tab, text="Generate Report", command=self._on_generate_report)
+        btn_report = ttk.Button(
+            tab, text="Generate Report", command=self._on_generate_report
+        )
         btn_report.grid(row=2, column=0, columnspan=3, pady=12)
         self.action_buttons.append(btn_report)
 
@@ -139,7 +169,9 @@ class App:
 
         ttk.Label(frame, text="Status Log:").pack(anchor="w")
 
-        self.log_text = scrolledtext.ScrolledText(frame, height=10, state="disabled", wrap="word")
+        self.log_text = scrolledtext.ScrolledText(
+            frame, height=10, state="disabled", wrap="word"
+        )
         self.log_text.pack(fill="both", expand=True, pady=(2, 4))
 
         bottom = ttk.Frame(frame)
@@ -233,7 +265,9 @@ class App:
         if not output_dir:
             self._append_log("ERROR: No output directory specified.")
             return
-        self._run_in_thread(self._worker_single_process, Path(input_path), Path(output_dir))
+        self._run_in_thread(
+            self._worker_single_process, Path(input_path), Path(output_dir)
+        )
 
     def _on_run_batch(self):
         input_dir = self.batch_input.get().strip()
@@ -245,7 +279,10 @@ class App:
             self._append_log("ERROR: No output directory specified.")
             return
         self._run_in_thread(
-            self._worker_batch, Path(input_dir), Path(output_dir), self.batch_dry_run.get()
+            self._worker_batch,
+            Path(input_dir),
+            Path(output_dir),
+            self.batch_dry_run.get(),
         )
 
     def _on_generate_report(self):
@@ -281,7 +318,9 @@ class App:
                 return
 
             self.msg_queue.put(("log", f"Processing {input_path.name}..."))
-            output_file = process_single_excel(input_path, output_dir, verbose=False, quiet=True)
+            output_file = process_single_excel(
+                input_path, output_dir, verbose=False, quiet=True
+            )
             self.msg_queue.put(("done", f"Successfully processed: {output_file}"))
         except Exception as e:
             self.msg_queue.put(("error", f"Processing failed: {e}"))
@@ -311,13 +350,17 @@ class App:
                     self.msg_queue.put(("log", f"OK: {f.name}"))
 
             if not all_valid:
-                self.msg_queue.put(("error", "Validation failed. Fix errors before processing."))
+                self.msg_queue.put(
+                    ("error", "Validation failed. Fix errors before processing.")
+                )
                 return
 
             self.msg_queue.put(("log", "All files passed validation."))
 
             if dry_run:
-                self.msg_queue.put(("done", "Dry run complete. No files were processed."))
+                self.msg_queue.put(
+                    ("done", "Dry run complete. No files were processed.")
+                )
                 return
 
             successful, failed = 0, 0
@@ -325,14 +368,18 @@ class App:
                 self.msg_queue.put(("log", f"[{i}/{total}] Processing {f.name}..."))
                 self.msg_queue.put(("progress", (i, total)))
                 try:
-                    output_file = process_single_excel(f, output_dir, verbose=False, quiet=True)
+                    output_file = process_single_excel(
+                        f, output_dir, verbose=False, quiet=True
+                    )
                     successful += 1
                     self.msg_queue.put(("log", f"  Created: {output_file.name}"))
                 except Exception as e:
                     failed += 1
                     self.msg_queue.put(("log", f"  Failed: {e}"))
 
-            self.msg_queue.put(("done", f"Batch complete. {successful} succeeded, {failed} failed."))
+            self.msg_queue.put(
+                ("done", f"Batch complete. {successful} succeeded, {failed} failed.")
+            )
         except Exception as e:
             self.msg_queue.put(("error", str(e)))
 
@@ -344,13 +391,20 @@ class App:
 
             processed_files = sorted(processed_dir.glob("*_processed.xlsx"))
             if not processed_files:
-                self.msg_queue.put(("error", f"No processed files found in {processed_dir}"))
+                self.msg_queue.put(
+                    ("error", f"No processed files found in {processed_dir}")
+                )
                 return
 
             self.msg_queue.put(
-                ("log", f"Found {len(processed_files)} processed file(s). Generating report...")
+                (
+                    "log",
+                    f"Found {len(processed_files)} processed file(s). Generating report...",
+                )
             )
-            generate_summary_report(processed_files, output_path, verbose=False, quiet=True)
+            generate_summary_report(
+                processed_files, output_path, verbose=False, quiet=True
+            )
             self.msg_queue.put(("done", f"Report created: {output_path}"))
         except Exception as e:
             self.msg_queue.put(("error", f"Report generation failed: {e}"))

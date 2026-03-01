@@ -3,12 +3,12 @@ Report generator module for creating summary reports from processed files.
 """
 
 from pathlib import Path
-from typing import List, Dict, Tuple
+from typing import Dict, List, Tuple
+
+import matplotlib.pyplot as plt
 import pandas as pd
 from openpyxl import Workbook, load_workbook
-from openpyxl.styles import PatternFill, Font
-import matplotlib.pyplot as plt
-
+from openpyxl.styles import Font, PatternFill
 
 # Tab10 color palette (RGB tuples)
 TAB10_COLORS = [
