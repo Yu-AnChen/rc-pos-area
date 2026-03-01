@@ -267,6 +267,16 @@ def process_single_excel(
         )
         del gimg_np
 
+        # Calculate positive fractions
+        thresholds_df.loc[cc, "Fraction P (%)"] = 100 * (
+            thresholds_df.loc[cc, "Area P (µm^2)"]
+            / thresholds_df.loc[cc, "Area (µm^2)"]
+        )
+        thresholds_df.loc[cc, "Fraction P in T (%)"] = 100 * (
+            thresholds_df.loc[cc, "Area P in T (µm^2)"]
+            / thresholds_df.loc[cc, "Area T (µm^2)"]
+        )
+
         # --- Phase 2: intensity stats (from raw unsmoothed image) ---
         img_np = np.asarray(img)
 
@@ -280,14 +290,6 @@ def process_single_excel(
             thresholds_df.loc[cc, f"Median Intensity {col_suffix}"] = median
             thresholds_df.loc[cc, f"Fraction 0 {col_suffix} (%)"] = zero_frac * 100
         del img_np
-
-    # Calculate positive fractions
-    thresholds_df["Fraction P (%)"] = 100 * (
-        thresholds_df["Area P (µm^2)"] / thresholds_df["Area (µm^2)"]
-    )
-    thresholds_df["Fraction P in T (%)"] = 100 * (
-        thresholds_df["Area P in T (µm^2)"] / thresholds_df["Area T (µm^2)"]
-    )
 
     # Round values
     area_cols = ["Area (µm^2)", "Area P (µm^2)", "Area T (µm^2)", "Area P in T (µm^2)"]
