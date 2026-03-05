@@ -73,7 +73,7 @@ mkdir rc-pos-area-env && cd rc-pos-area-env
 curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.toml
 curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.lock
 
-pixi install -frozen
+pixi install --frozenn
 ```
 
 </details>
@@ -96,14 +96,14 @@ pixi run pos-area --version
 
 ## Updating
 
-When a new version is released, update by replacing your local `pixi.toml` and `pixi.lock` files and re-running `pixi install -frozen`.
+When a new version is released, update by replacing your local `pixi.toml` and `pixi.lock` files and re-running `pixi install --frozenn`.
 
 Run these commands in Command Prompt (from inside your rc-pos-area-env folder):
 
 ```cmd
 curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.toml
 curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.lock
-pixi install -frozen
+pixi install --frozenn
 ```
 
 <details>
@@ -112,7 +112,7 @@ pixi install -frozen
 ```bash
 curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.toml
 curl -OL https://raw.githubusercontent.com/Yu-AnChen/rc-pos-area/refs/heads/main/pixi/pixi.lock
-pixi install -frozen
+pixi install --frozenn
 ```
 
 </details>
